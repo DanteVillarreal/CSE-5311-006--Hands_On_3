@@ -1,0 +1,121 @@
+#include <stdio.h>
+
+// Function to find the minimum of two integers
+int min(int x, int y) 
+{
+    if (x < y)
+    {
+        return x;
+    }
+    else
+    {
+        return y;
+    }
+}
+
+// Function to merge two subarrays
+void merge(int arr[], int left, int mid, int right) 
+{
+    int i, j, k;
+    int sizeLeft = mid - left + 1;
+    int sizeRight = right - mid;
+
+    // Create temporary arrays
+    int leftArr[sizeLeft], rightArr[sizeRight];
+
+    // Copy data to temporary arrays
+    for (i = 0; i < sizeLeft; i++)
+    {
+        leftArr[i] = arr[left + i];
+    }
+    for (j = 0; j < sizeRight; j++)
+    {
+        rightArr[j] = arr[mid + 1 + j];
+    }
+
+    // Merge the temporary arrays back into arr[]
+    // Initial index of first subarray
+    i = 0; 
+    // Initial index of second subarray
+    j = 0; 
+    // Initial index of merged subarray
+    k = left; 
+    while (i < sizeLeft && j < sizeRight) 
+    {
+        if (leftArr[i] <= rightArr[j]) 
+        {
+            arr[k] = leftArr[i];
+            i++;
+        } 
+        else 
+        {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements of leftArr[], if there are any
+    while (i < sizeLeft) 
+    {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of rightArr[], if there are any
+    while (j < sizeRight) 
+    {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+
+// Function to sort arr[] using iterative merge sort
+void mergeSort(int arr[], int n) 
+{
+    int currSize;
+    int leftStart;
+
+    // Outer loop for current size of subarrays to be merged
+    for (currSize = 1; currSize <= n - 1; currSize = 2 * currSize) 
+    {
+        // Inner loop for the start index of left subarray
+        for (leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) 
+        {
+            // Find ending point of left subarray
+            int mid = min(leftStart + currSize - 1, n - 1);
+            // Find ending point of right subarray
+            int rightEnd = min(leftStart + 2 * currSize - 1, n - 1);
+
+            // Merge the two subarrays
+            merge(arr, leftStart, mid, rightEnd);
+        }
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int size) 
+{
+    int i;
+    for (i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+
+int main() 
+{
+    int arr[] = {5, 2, 4, 7, 1, 3, 2, 6};
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Given array is \n");
+    printArray(arr, arrSize);
+
+    mergeSort(arr, arrSize);
+
+    printf("\nSorted array is \n");
+    printArray(arr, arrSize);
+    return 0;
+}
